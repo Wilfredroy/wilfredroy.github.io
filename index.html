@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wilfred Roy - Full Stack Developer</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <style>
+        /* ------------------- */
+        /* Basic Setup & Theme */
+        /* ------------------- */
+        :root {
+            --bg-color: #000000;
+            --text-color: #E0E0E0;
+            --text-muted-color: #a0a0a0;
+            --text-hover-color: #ffffff;
+            --glass-bg: rgba(30, 30, 30, 0.25);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-shadow: rgba(255, 255, 255, 0.06);
+            --dot-grid-color: rgba(255, 255, 255, 0.05);
+            --liquid-hover-bg: rgba(255, 255, 255, 0.2);
+            --cursor-color: #ffffff;
+        }
+
+        body.light-mode {
+            --bg-color: #ffffff;
+            --text-color: #1a1a1a;
+            --text-muted-color: #555;
+            --text-hover-color: #000000;
+            --glass-bg: rgba(240, 240, 240, 0.6);
+            --glass-border: rgba(0, 0, 0, 0.1);
+            --glass-shadow: rgba(0, 0, 0, 0.08);
+            --dot-grid-color: rgba(0, 0, 0, 0.05);
+            --liquid-hover-bg: rgba(0, 0, 0, 0.05);
+            --cursor-color: #000000;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+            transition: background-color 0.5s, color 0.5s;
+            cursor: none; /* Hide default cursor */
+        }
+
+        a, button, [data-tilt], .project-card {
+            cursor: none; /* Ensure interactive elements also hide default cursor */
+        }
+
+        /* Custom Cursor */
+        #custom-cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--cursor-color);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, background-color 0.3s, opacity 0.3s;
+            z-index: 9999;
+        }
+
+        #custom-cursor.grow {
+            width: 40px;
+            height: 40px;
+            background-color: var(--cursor-color);
+            opacity: 0.5;
+        }
+
+
+        /* Symbiote/Nothing-style dot grid background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(to right, var(--dot-grid-color) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--dot-grid-color) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -2;
+            animation: bg-scan 20s linear infinite;
+            transition: background-image 0.5s;
+        }
+
+        @keyframes bg-scan {
+            0% { background-position: 0 0; }
+            50% { background-position: 40px 40px; }
+            100% { background-position: 0 0; }
+        }
+
+        /* ------------------- */
+        /* Glassmorphism Style */
+        /* ------------------- */
+        .glass-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 0 80px var(--glass-shadow);
+            border-radius: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: background 0.5s, border 0.5s, box-shadow 0.5s;
+        }
+        
+        /* Liquid Glass Effect */
+        .liquid-glass::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: skewX(-25deg);
+            transition: left 0.7s;
+        }
+        .liquid-glass:hover::before {
+            left: 150%;
+        }
+        body.light-mode .liquid-glass::before {
+             background: linear-gradient(90deg, transparent, rgba(0,0,0,0.05), transparent);
+        }
+
+
+        /* ------------------- */
+        /* Animations & Transitions */
+        /* ------------------- */
+        .section {
+            transition: opacity 1s, transform 1s;
+        }
+
+        body.loading .section {
+            opacity: 0;
+        }
+
+        /* Typing animation for hero subtitle */
+        .typing-effect {
+            display: inline-block;
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: .15em solid var(--text-color);
+            animation: typing 3.5s steps(40, end), blink-caret .75s step-end 5;
+            width: 100%;
+        }
+
+        @keyframes typing {
+            from { width: 0 }
+            to { width: 100% }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: var(--text-color); }
+        }
+        
+        /* Neon Glow Effect */
+        .neon-glow:hover {
+            box-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #a7a7a7;
+        }
+        body.light-mode .neon-glow:hover {
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        }
+
+        /* Liquid Hover Button */
+        .liquid-button {
+            position: relative;
+            overflow: hidden;
+        }
+        .liquid-button::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: var(--liquid-hover-bg);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.8s ease, height 0.8s ease;
+        }
+        .liquid-button:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        /* Intro Scanner Animation */
+        .intro-scanner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1s ease-out 2.5s;
+        }
+        .intro-scanner.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .scanner-line {
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #fff, transparent);
+            box-shadow: 0 0 20px #fff;
+            animation: scan-anim 2.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        @keyframes scan-anim {
+            0% { transform: scaleY(0) translateY(-50vh); }
+            50% { transform: scaleY(1) translateY(0); }
+            100% { transform: scaleY(0) translateY(50vh); }
+        }
+        .intro-text {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0;
+            animation: fade-in 1s ease-in 1.5s forwards;
+        }
+        @keyframes fade-in {
+            to { opacity: 1; }
+        }
+
+        /* Project Modal */
+        #project-modal {
+            perspective: 1200px;
+        }
+        #project-modal-content {
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            transform: scale(0.7) rotateY(90deg);
+        }
+        #project-modal.visible #project-modal-content {
+            transform: scale(1) rotateY(0deg);
+        }
+        
+        /* Magnetic Icons */
+        .magnetic-icon {
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .text-muted {
+            color: var(--text-muted-color);
+            transition: color 0.5s;
+        }
+        
+        .nav-link {
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: var(--text-hover-color);
+        }
+        
+        .contact-title {
+            background-image: linear-gradient(to right, #e0e0e0, #a0a0a0);
+        }
+        
+        body.light-mode .contact-title {
+            background-image: linear-gradient(to right, #333, #777);
+        }
+    </style>
+</head>
+<body class="bg-black text-gray-200 loading">
+    
+    <div id="custom-cursor"></div>
+
+    <!-- Intro Scanner Animation -->
+    <div id="intro-scanner" class="intro-scanner">
+        <div class="scanner-line"></div>
+        <div class="intro-text">Wilfred Roy</div>
+    </div>
+
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 p-4 section">
+        <nav class="container mx-auto flex justify-between items-center glass-container p-4">
+            <a href="#hero" class="text-2xl font-bold">WR.</a>
+            <div class="hidden md:flex space-x-6 items-center">
+                <a href="#about" class="nav-link">About</a>
+                <a href="#projects" class="nav-link">Projects</a>
+                <a href="#experience" class="nav-link">Experience</a>
+                <a href="#education" class="nav-link">Education</a>
+                <a href="#contact" class="nav-link">Contact</a>
+                <a href="https://drive.google.com/uc?export=download&id=179alh_5yVmgbZEOek9qSDzuUfvE4_Oom" target="_blank" rel="noopener noreferrer" class="nav-link bg-white/10 px-3 py-2 rounded-full hover:bg-white/20 text-sm">Resume <i class="fas fa-download ml-1"></i></a>
+                <button id="theme-toggle" class="text-xl w-10 h-10 rounded-full hover:bg-white/10 flex items-center justify-center">
+                    <i class="fas fa-sun"></i>
+                </button>
+            </div>
+            <button id="mobile-menu-btn" class="md:hidden text-2xl">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </nav>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden mt-2 glass-container p-4 text-center space-y-4">
+            <a href="#about" class="block nav-link">About</a>
+            <a href="#projects" class="block nav-link">Projects</a>
+            <a href="#experience" class="block nav-link">Experience</a>
+            <a href="#education" class="block nav-link">Education</a>
+            <a href="#contact" class="block nav-link">Contact</a>
+            <a href="https://drive.google.com/uc?export=download&id=179alh_5yVmgbZEOek9qSDzuUfvE4_Oom" target="_blank" rel="noopener noreferrer" class="block nav-link mt-2">Download Resume</a>
+            <button id="mobile-theme-toggle" class="w-full mt-2 py-2 rounded-full bg-white/10">Toggle Theme</button>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4" style="perspective: 1200px;">
+
+        <!-- Hero Section -->
+        <section id="hero" class="min-h-screen flex flex-col justify-center items-center text-center section">
+            <h1 class="text-5xl md:text-7xl font-bold mb-4 mt-20">Hi, I’m Wilfred Roy</h1>
+            <p class="text-xl md:text-2xl text-muted mb-8">
+                <span id="hero-subtitle" class="typing-effect">Bringing Ideas to Life with Code</span>
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4">
+                <a href="#projects" class="liquid-button glass-container px-8 py-3 rounded-full font-semibold transition-all duration-300">
+                    <span class="relative z-10">Latest Project</span>
+                </a>
+                <!-- === BUTTON UPDATED HERE === -->
+                <a href="https://drive.google.com/uc?export=download&id=179alh_5yVmgbZEOek9qSDzuUfvE4_Oom"
+                   download
+                   rel="noopener noreferrer"
+                   class="liquid-button glass-container px-8 py-3 rounded-full font-semibold transition-all duration-300 flex items-center justify-center">
+                    <span class="relative z-10">Download Resume <i class="fas fa-download ml-2"></i></span>
+                </a>
+            </div>
+        </section>
+
+        <!-- About Me Section -->
+        <section id="about" class="py-32 section">
+            <div class="glass-container p-8 md:p-12">
+                <h2 class="text-4xl font-bold mb-12 text-center">About Me</h2>
+                <div class="max-w-5xl mx-auto grid md:grid-cols-3 gap-12 items-center">
+                    <div class="md:col-span-1" data-scroll-reveal>
+                        <img src="https://i.postimg.cc/4NvrJkZ7/Screenshot-20250720-114608.png" 
+     alt="Wilfred Roy" 
+     class="rounded-full glass-container p-2 w-full max-w-[250px] mx-auto" 
+     onerror="this.onerror=null;this.src='https://i.postimg.cc/4NvrJkZ7/Screenshot-20250720-114608.png';">
+
+                    </div>
+                    <div class="md:col-span-2 text-lg text-muted leading-relaxed">
+                        <p data-scroll-reveal>Final-year B.Tech student in Artificial Intelligence and Data Science with practical experience building full-stack applications and AI tools. Proficient in Java, Spring Boot (basic), and frontend technologies such as HTML, CSS, and JavaScript.</p>
+                        <p data-scroll-reveal class="mt-4">Completed projects like a document summarizer and a sentiment-aware chatbot, both tested with over 100 real cases. Developed functional components and handled backend integration during internships in generative AI and full stack development.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tech Stack Section -->
+        <section id="tech-stack" class="py-32 section">
+    <h2 class="text-4xl font-bold mb-12 text-center">Tech Stack</h2>
+    <div class="flex flex-wrap justify-center items-center gap-8">
+        <div data-tilt class="glass-container p-6 rounded-full w-24 h-24 flex items-center justify-center neon-glow" title="Java"><i class="fab fa-java text-5xl text-red-400"></i></div>
+        <div data-tilt class="glass-container p-6 rounded-full w-24 h-24 flex items-center justify-center neon-glow" title="Python"><i class="fab fa-python text-5xl text-blue-400"></i></div>
+        <div data-tilt class="glass-container p-6 rounded-full w-24 h-24 flex items-center justify-center neon-glow" title="JavaScript"><i class="fab fa-js text-5xl text-yellow-400"></i></div>
+        <div data-tilt class="glass-container p-6 rounded-full w-24 h-24 flex items-center justify-center neon-glow" title="HTML5"><i class="fab fa-html5 text-5xl text-orange-500"></i></div>
+        <div data-tilt class="glass-container p-6 rounded-full w-24 h-24 flex items-center justify-center neon-glow" title="CSS3"><i class="fab fa-css3-alt text-5xl text-blue-500"></i></div>
+        <div data-tilt class="glass-container p-6 rounded-full w-24 h-24 flex items-center justify-center neon-glow" title="Spring Boot"><i class="fas fa-leaf text-5xl text-green-400"></i></div>
+        <div data-tilt class="glass-container p-6 rounded-full w-24 h-24 flex items-center justify-center neon-glow" title="MySQL"><i class="fas fa-database text-5xl text-blue-500"></i></div>
+        <div data-tilt class="glass-container p-6 rounded-full w-24 h-24 flex items-center justify-center neon-glow" title="MongoDB"><i class="fas fa-database text-5xl text-green-500"></i></div>
+        <div data-tilt class="glass-container p-6 rounded-full w-24 h-24 flex items-center justify-center neon-glow" title="Git"><i class="fab fa-git-alt text-5xl text-orange-500"></i></div>
+        <div data-tilt class="glass-container p-6 rounded-full w-24 h-24 flex items-center justify-center neon-glow" title="Figma"><i class="fab fa-figma text-5xl text-pink-500"></i></div>
+        <div data-tilt class="glass-container p-6 rounded-full w-24 h-24 flex items-center justify-center neon-glow" title="Power BI"><i class="fas fa-chart-bar text-5xl text-yellow-500"></i></div>
+    </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="py-32 section">
+            <h2 class="text-4xl font-bold mb-12 text-center">Projects</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div data-scroll-reveal class="glass-container liquid-glass overflow-hidden project-card" 
+                     data-project-title="GHOST - General Heuristic Operating System" 
+                     data-project-desc="GHOST is a conceptual framework for an AI-driven operating system core. The project explores advanced heuristics, predictive algorithms, and autonomous task management to create a self-optimizing system environment. Written primarily in Python, it leverages reinforcement learning to manage system resources, predict user behavior, and automate complex workflows. The goal is to design a lightweight, intelligent OS layer that can dynamically adapt to workloads, significantly improving efficiency and responsiveness for high-performance computing tasks." 
+                     data-project-tech="Python,Reinforcement Learning,System Design" 
+                     data-project-github="under-development"
+                     data-project-img="https://placehold.co/600x400/000000/FFFFFF?text=GHOST">
+                    <img src="https://placehold.co/600x400/000000/FFFFFF?text=GHOST" class="w-full h-48 object-cover transition-transform duration-500 hover:scale-110" onerror="this.onerror=null;this.src='https://placehold.co/600x400/000000/FFFFFF?text=Image';">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold">GHOST AI</h3>
+                        <p class="text-muted mt-2">System-level controlling AI.</p>
+                    </div>
+                </div>
+                <div data-scroll-reveal class="glass-container liquid-glass overflow-hidden project-card" 
+                     data-project-title="Document Summarizer" 
+                     data-project-desc="This project is a sophisticated desktop application built with Java and JavaFX, designed to streamline the process of information consumption. It employs a custom-developed sentence-ranking algorithm based on TF-IDF (Term Frequency-Inverse Document Frequency) and positional heuristics to identify the most salient sentences in a given text. The goal was to create a tool that could rapidly condense large documents into concise, coherent summaries, thereby saving users significant time. The application was rigorously tested with over 15 diverse documents, consistently achieving a 60% reduction in size while retaining key information. Performance was a key focus, with optimizations leading to an average processing time of under 1.5 seconds per document." 
+                     data-project-tech="Java,JavaFX" 
+                     data-project-github="https://github.com/Wilfredroy/Document-Summarizer-using-Java"
+                     data-project-img="https://placehold.co/600x400/000000/FFFFFF?text=Summarizer">
+                    <img src="https://placehold.co/600x400/000000/FFFFFF?text=Summarizer" class="w-full h-48 object-cover transition-transform duration-500 hover:scale-110" onerror="this.onerror=null;this.src='https://placehold.co/600x400/000000/FFFFFF?text=Image';">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold">Document Summarizer</h3>
+                        <p class="text-muted mt-2">JavaFX-based text processing app.</p>
+                    </div>
+                </div>
+                 <div data-scroll-reveal class="glass-container liquid-glass overflow-hidden project-card" 
+                     data-project-title="Conversational AI Chatbot" 
+                     data-project-desc="This project involved the creation of a smart, responsive chatbot designed to handle user queries with a high degree of accuracy. It utilizes a hybrid approach, combining rule-based decision trees for predictable queries with a machine learning model for understanding natural language nuances. The backend, built with Python and Flask, serves an NLP pipeline that leverages NLTK for text preprocessing and a pre-trained model from the Hugging Face library for intent recognition and sentiment analysis. The system was evaluated against a corpus of over 100 mock dialogues, leading to a 40% improvement in response latency after several optimization iterations." 
+                     data-project-tech="Python,Flask,NLTK,Hugging Face" 
+                     data-project-github="https://github.com/Wilfredroy/Luca-AI-Conversational-AI-Model/"
+                     data-project-img="https://placehold.co/600x400/000000/FFFFFF?text=Chatbot">
+                    <img src="https://placehold.co/600x400/000000/FFFFFF?text=Chatbot" class="w-full h-48 object-cover transition-transform duration-500 hover:scale-110" onerror="this.onerror=null;this.src='https://placehold.co/600x400/000000/FFFFFF?text=Image';">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold">Conversational AI Chatbot</h3>
+                        <p class="text-muted mt-2">NLP with Flask and Hugging Face.</p>
+                    </div>
+                </div>
+                <div data-scroll-reveal class="glass-container liquid-glass overflow-hidden project-card" 
+                     data-project-title="AI Image Detector" 
+                     data-project-desc="A tool that leverages deep learning models to classify images as either human-created or AI-generated. The system analyzes image artifacts and statistical patterns unique to generative models to make its prediction. This project explores the fields of computer vision and digital forensics to combat misinformation."
+                     data-project-tech="Python,TensorFlow,Keras,Computer Vision" 
+                     data-project-github="https://github.com/Wilfredroy/AI-Image-Detector/"
+                     data-project-img="https://placehold.co/600x400/000000/FFFFFF?text=AI Image Detector">
+                    <img src="http://googleusercontent.com/file_content/1" class="w-full h-48 object-cover transition-transform duration-500 hover:scale-110" onerror="this.onerror=null;this.src='https://placehold.co/600x400/000000/FFFFFF?text=Image';">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold">AI Image Detector</h3>
+                        <p class="text-muted mt-2">Detects if an image is AI-generated.</p>
+                    </div>
+                </div>
+                 <div data-scroll-reveal class="glass-container liquid-glass overflow-hidden project-card" 
+                     data-project-title="Verve - AI Resume Builder" 
+                     data-project-desc="Verve is a full-stack web application designed to help users create professional, industry-standard resumes with ease. The frontend, built with HTML, provides a clean, interactive interface for users to input their information. The core feature is an AI assistant, powered by a javascript and Express backend, which connects to a generative AI API. This assistant offers real-time suggestions for improving resume content, optimizing keywords for Applicant Tracking Systems (ATS), and ensuring a professional tone. The application aims to democratize resume building by providing expert-level guidance through an intuitive UI." 
+                     data-project-tech="React,Node.js,Express,Generative AI" 
+                     data-project-github="https://github.com/Wilfredroy/Verve-ResumeBuilder-UsingAI"
+                     data-project-img="https://placehold.co/600x400/000000/FFFFFF?text=Verve">
+                    <img src="https://placehold.co/600x400/000000/FFFFFF?text=Verve" class="w-full h-48 object-cover transition-transform duration-500 hover:scale-110" onerror="this.onerror=null;this.src='https://placehold.co/600x400/000000/FFFFFF?text=Image';">
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold">Verve Resume Builder</h3>
+                        <p class="text-muted mt-2">AI-powered resume creation tool.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience Section -->
+        <section id="experience" class="py-32 section">
+            <h2 class="text-4xl font-bold mb-12 text-center">Internships</h2>
+            <div class="max-w-3xl mx-auto relative">
+                <div class="absolute left-1/2 top-0 bottom-0 w-0.5" style="background-color: var(--glass-border)"></div>
+                <!-- Experience Item -->
+                <div data-scroll-reveal class="mb-12 flex items-center w-full">
+                    <div class="w-1/2 pr-8 text-right">
+                        <p class="text-muted">Dec 2024 - Feb 2025</p>
+                        <h3 class="text-xl font-bold">Ceeras</h3>
+                    </div>
+                    <div class="w-1/2 pl-8">
+                        <div class="glass-container p-4 rounded-lg">
+                            <h4 class="font-semibold">Full Stack Developer Intern</h4>
+                            <p class="text-sm text-muted mt-1">Created and deployed frontend components using React.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Experience Item (reversed) -->
+                <div data-scroll-reveal class="mb-12 flex flex-row-reverse items-center w-full">
+                    <div class="w-1/2 pl-8 text-left">
+                        <p class="text-muted">Jul 2024 - Aug 2024</p>
+                        <h3 class="text-xl font-bold">Skillible</h3>
+                    </div>
+                    <div class="w-1/2 pr-8">
+                        <div class="glass-container p-4 rounded-lg">
+                            <h4 class="font-semibold">Generative AI Intern</h4>
+                            <p class="text-sm text-muted mt-1">Built prompt-based Gen AI scripts using Google Colab.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Education Section -->
+        <section id="education" class="py-32 section">
+            <h2 class="text-4xl font-bold mb-12 text-center">Education</h2>
+            <div class="max-w-4xl mx-auto grid md:grid-cols-2 gap-8">
+                <div class="glass-container p-8 text-center">
+                    <h3 class="text-2xl font-bold">SNS College of Engineering</h3>
+                    <p class="text-lg text-muted mt-2">B.Tech in AI & Data Science, Coimbatore</p>
+                    <p class="text-muted mt-1">Nov 2022 - May 2026</p>
+                    <p class="text-xl font-semibold mt-4">CGPA: 8.54</p>
+                </div>
+                <div class="glass-container p-8 text-center">
+                    <h3 class="text-2xl font-bold">Vairams Matric Hr. Sec. School</h3>
+                    <p class="text-lg text-muted mt-2">HSC and SSLC, Pudukkottai</p>
+                    <p class="text-muted mt-1">Aug 2010 - May 2022</p>
+                    <p class="text-xl font-semibold mt-4">HSC: 84.8%, SSLC: 88.4%</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Certifications Section -->
+        <section id="certifications" class="py-32 section">
+            <h2 class="text-4xl font-bold mb-12 text-center">Certifications</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <div data-tilt class="glass-container liquid-glass p-6 text-center neon-glow flex flex-col justify-center">
+                    <h3 class="font-bold text-lg">AWS Certified Machine Learning</h3>
+                    <p class="text-muted">(Pursuing)</p>
+                </div>
+                <div data-tilt class="glass-container liquid-glass p-6 text-center neon-glow flex flex-col justify-center">
+                    <h3 class="font-bold text-lg">AI/ML Labs</h3>
+                    <p class="text-muted">Google Cloud Skill Boost</p>
+                </div>
+                <div data-tilt class="glass-container liquid-glass p-6 text-center neon-glow flex flex-col justify-center">
+                    <h3 class="font-bold text-lg">Introduction to Generative AI</h3>
+                    <p class="text-muted">Google Cloud</p>
+                </div>
+                <div data-tilt class="glass-container liquid-glass p-6 text-center neon-glow flex flex-col justify-center">
+                    <h3 class="font-bold text-lg">IBM Design Thinking</h3>
+                    <p class="text-muted">IBM SkillsBuild</p>
+                </div>
+                <div data-tilt class="glass-container liquid-glass p-6 text-center neon-glow flex flex-col justify-center">
+                    <h3 class="font-bold text-lg">Git & GitHub</h3>
+                    <p class="text-muted">PrepInsta Prime</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="py-32 text-center section">
+            <h2 class="text-4xl font-bold mb-4 bg-clip-text text-transparent contact-title">Tell me about your next project.</h2>
+            <p class="text-lg text-muted mb-8">Let's create something amazing together.</p>
+            <form action="mailto:wilfredroy97@gmail.com" class="max-w-xl mx-auto">
+                <div class="glass-container flex items-center p-2 rounded-full shadow-inner-white">
+                    <input type="email" placeholder="your.email@example.com" class="w-full bg-transparent p-3 placeholder-gray-500 focus:outline-none">
+                    <button type="submit" class="bg-white text-black font-bold px-8 py-3 rounded-full neon-glow">Send</button>
+                </div>
+            </form>
+            <div id="contact-icons" class="flex justify-center space-x-8 mt-12 text-3xl">
+                <a href="https://github.com/Wilfredroy" target="_blank" class="magnetic-icon text-muted nav-link"><i class="fab fa-github"></i></a>
+                <a href="https://linkedin.com/in/wilfred-roy" target="_blank" class="magnetic-icon text-muted nav-link"><i class="fab fa-linkedin"></i></a>
+                <a href="mailto:wilfredroy97@gmail.com" class="magnetic-icon text-muted nav-link"><i class="fas fa-envelope"></i></a>
+                <a href="tel:+918610841032" class="magnetic-icon text-muted nav-link"><i class="fas fa-phone"></i></a>
+            </div>
+        </section>
+
+    </main>
+    
+    <!-- Project Modal -->
+    <div id="project-modal" class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 hidden">
+        <div id="project-modal-content" class="glass-container max-w-4xl w-full rounded-2xl overflow-hidden">
+            <div class="p-8 max-h-[90vh] overflow-y-auto">
+                <div class="flex justify-between items-start mb-4">
+                    <h2 id="modal-title" class="text-3xl font-bold">Project Title</h2>
+                    <button id="close-modal-btn" class="text-3xl nav-link">&times;</button>
+                </div>
+                <img id="modal-img" src="" alt="Project Image" class="w-full h-64 object-cover rounded-lg mb-6" onerror="this.onerror=null;this.src='https://placehold.co/600x400/000000/FFFFFF?text=Image';">
+                <div id="modal-tech" class="flex flex-wrap gap-2 mb-4"></div>
+                <p id="modal-desc" class="text-muted mb-6 leading-relaxed"></p>
+                <a id="modal-github-link" href="#" target="_blank" class="inline-block liquid-button glass-container px-6 py-2 rounded-full font-semibold transition-all duration-300">
+                    <span class="relative z-10">View on GitHub <i class="fab fa-github ml-2"></i></span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- JS Libraries -->
+    <script src="https://unpkg.com/scrollreveal"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.7.2/dist/vanilla-tilt.min.js"></script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const customCursor = document.getElementById('custom-cursor');
+        const hoverables = document.querySelectorAll('a, button, .project-card, [data-tilt]');
+
+        document.addEventListener('mousemove', (e) => {
+            customCursor.style.top = `${e.clientY}px`;
+            customCursor.style.left = `${e.clientX}px`;
+        });
+
+        hoverables.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                customCursor.classList.add('grow');
+            });
+            el.addEventListener('mouseleave', () => {
+                customCursor.classList.remove('grow');
+            });
+        });
+
+        const themeToggleButton = document.getElementById('theme-toggle');
+        const mobileThemeToggleButton = document.getElementById('mobile-theme-toggle');
+        const themeIcon = themeToggleButton.querySelector('i');
+
+        const applyTheme = (theme) => {
+            if (theme === 'light') {
+                document.body.classList.add('light-mode');
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            } else {
+                document.body.classList.remove('light-mode');
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            }
+        };
+
+        const toggleTheme = () => {
+            const currentTheme = document.body.classList.contains('light-mode') ? 'light' : 'dark';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            localStorage.setItem('theme', newTheme);
+            applyTheme(newTheme);
+        };
+
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        applyTheme(savedTheme);
+
+        themeToggleButton.addEventListener('click', toggleTheme);
+        mobileThemeToggleButton.addEventListener('click', toggleTheme);
+
+        // --- Intro Animation ---
+        const introScanner = document.getElementById('intro-scanner');
+        setTimeout(() => {
+            introScanner.classList.add('hidden');
+            document.body.classList.remove('loading');
+            initScrollReveal();
+        }, 3000);
+
+        // --- Mobile Menu ---
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // --- Tagline animation final state ---
+        const subtitle = document.getElementById('hero-subtitle');
+        setTimeout(() => {
+            subtitle.style.borderRight = 'none';
+        }, 4000); 
+
+        function initScrollReveal() {
+            const sr = ScrollReveal({
+                origin: 'bottom',
+                distance: '50px',
+                duration: 1000,
+                delay: 200,
+                easing: 'cubic-bezier(0.6, 0.2, 0.1, 1)',
+                reset: false,
+                viewFactor: 0.2
+            });
+            sr.reveal('.section', { interval: 200 });
+            sr.reveal('[data-scroll-reveal]', { interval: 100, origin: 'left', distance: '30px' });
+        }
+
+        // --- Vanilla-Tilt.js ---
+        VanillaTilt.init(document.querySelectorAll("[data-tilt]"), {
+            max: 15,
+            speed: 400,
+            glare: true,
+            "max-glare": 0.2
+        });
+
+        // --- Project Modal Logic ---
+        const projectModal = document.getElementById('project-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const projectCards = document.querySelectorAll('.project-card');
+
+        projectCards.forEach(card => {
+            card.addEventListener('click', () => {
+                document.getElementById('modal-title').innerText = card.dataset.projectTitle;
+                document.getElementById('modal-desc').innerText = card.dataset.projectDesc;
+                document.getElementById('modal-img').src = card.dataset.projectImg;
+
+                const techContainer = document.getElementById('modal-tech');
+                techContainer.innerHTML = '';
+                card.dataset.projectTech.split(',').forEach(tech => {
+                    const span = document.createElement('span');
+                    span.className = 'bg-white/10 text-white text-xs font-medium px-2.5 py-0.5 rounded-full';
+                    span.innerText = tech;
+                    techContainer.appendChild(span);
+                });
+
+                // === Updated GitHub Link Logic ===
+                const githubLink = document.getElementById('modal-github-link');
+                const githubLinkSpan = githubLink.querySelector('span');
+                const githubUrl = card.dataset.projectGithub;
+
+                if (githubUrl === 'under-development') {
+                    githubLink.href = '#'; 
+                    githubLink.style.pointerEvents = 'none'; 
+                    githubLink.style.opacity = '0.5'; 
+                    githubLinkSpan.innerHTML = 'Under Development';
+                } else {
+                    githubLink.href = githubUrl;
+                    githubLink.style.pointerEvents = 'auto';
+                    githubLink.style.opacity = '1';
+                    githubLinkSpan.innerHTML = 'View on GitHub <i class="fab fa-github ml-2"></i>';
+                }
+
+                projectModal.classList.remove('hidden');
+                setTimeout(() => projectModal.classList.add('visible'), 10);
+            });
+        });
+
+        const closeModal = () => {
+            projectModal.classList.remove('visible');
+            setTimeout(() => projectModal.classList.add('hidden'), 500);
+        };
+
+        closeModalBtn.addEventListener('click', closeModal);
+        projectModal.addEventListener('click', (e) => {
+            if (e.target === projectModal) {
+                closeModal();
+            }
+        });
+
+        // --- Magnetic Icons ---
+        const iconsContainer = document.getElementById('contact-icons');
+        iconsContainer.addEventListener('mousemove', (e) => {
+            const { target } = e;
+            if (target.classList.contains('magnetic-icon') || target.parentElement.classList.contains('magnetic-icon')) {
+                const icon = target.closest('.magnetic-icon');
+                const rect = icon.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                icon.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+            }
+        });
+        iconsContainer.addEventListener('mouseleave', () => {
+            document.querySelectorAll('.magnetic-icon').forEach(icon => {
+                icon.style.transform = 'translate(0, 0)';
+            });
+        });
+    });
+</script>
+</body>
+</html>
